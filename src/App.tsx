@@ -8,19 +8,22 @@ type Inputs = {
   descripcion: string
   precio: number
   marca: string
-  categoria: number
+  categoria: string
   version: number
 }
 
 export default function App() {
-  const { handleSubmit, control, reset } = useForm<Inputs>()
+  const { register, handleSubmit, control, reset } = useForm<Inputs>()
   const onSubmit: SubmitHandler<Inputs> = async datos => {
     try {
+      const { id, codigo, descripcion, precio, categoria, version, marca } = datos;
+
+      const categoriaParseada = parseInt(categoria)
+
       console.log(datos)
 
-      const { id, codigo, descripcion, precio, categoria, version, marca } = datos;
       const res = 
-        await fetch(`http://localhost:8080/producto?idProducto=${id}codigo=${codigo}&descripcion=${descripcion}&precio=${precio}&idCategoria=${categoria}&version=${version}&marca=${marca}`, {
+        await fetch(`http://localhost:8080/producto?idProducto=${id}&codigo=${codigo}&descripcion=${descripcion}&precio=${precio}&idCategoria=${categoriaParseada}&version=${version}&marca=${marca}`, {
       method: 'PUT', 
     });
 
@@ -101,20 +104,11 @@ export default function App() {
         />
       </div>
 
-
-      {/*esto tiene que ser un select normal*/}
       <div>
         <label htmlFor="">Categoria: </label>
-        <Controller
-          name="categoria"
-          control={control}
-          defaultValue={1}
-          render={({ field }) => (
-            <select {...field}>
-              <option>Ropa deportiva</option>
-            </select>
-          )}
-        />
+        <select {...register("categoria")}>
+        <option value={1}>Ropa deportiva</option>
+      </select>
       </div>
 
       <Controller
